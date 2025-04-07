@@ -210,11 +210,7 @@
                 const lifetimeByYears = maxLifetime;
 
                 // Anpassung der Lebensdauerberechnung
-                if (usage === 100) {
-                    lifetime = Math.min(lifetimeByCycles, lifetimeByYears);
-                } else {
-                    lifetime = lifetimeByYears; // Lebensdauer ist auf maxLifetime begrenzt
-                }
+                lifetime = Math.min(lifetimeByCycles, lifetimeByYears);
 
                 let actualLifetimeInDays = lifetime * 365;
                 let maxEnergyByConsumption = dailyConsumption * actualLifetimeInDays;
