@@ -185,7 +185,6 @@
             <tr>
                 <th>Nutzung (%)</th>
                 <th>benötigte Zyklen pro Tag</th>
-                <th>% des<br>Tagesverbrauchs</th>
                 <th>Tagesbedarf<br>(kWh)</th>
                 <th>Lebensdauer</th>
                 <th>Gesamtenergie<br>(kWh)</th>
@@ -239,11 +238,10 @@
             const newRow = lcoeTable.insertRow();
             newRow.insertCell(0).textContent = usage;
             newRow.insertCell(1).textContent = equivalentFullCyclesPerDay.toFixed(2);
-            newRow.insertCell(2).textContent = coveredConsumption.toFixed(2);
-            newRow.insertCell(3).textContent = dailyDemand.toFixed(2);
-            newRow.insertCell(4).textContent = lifetime.toFixed(2) + " Jahre (ca. " + equivalentFullCyclesPerDay.toFixed(2) + " Zyklen/Tag)";
-            newRow.insertCell(5).textContent = totalEnergy.toFixed(2);
-            newRow.insertCell(6).textContent = lcoe.toFixed(2);
+            newRow.insertCell(2).textContent = dailyDemand.toFixed(2);
+            newRow.insertCell(3).textContent = lifetime.toFixed(2) + " Jahre (ca. " + equivalentFullCyclesPerDay.toFixed(2) + " Zyklen/Tag)";
+            newRow.insertCell(4).textContent = totalEnergy.toFixed(2);
+            newRow.insertCell(5).textContent = lcoe.toFixed(2);
 
             usageLabels.push(usage + "%");
             lcoeData.push(lcoe);
