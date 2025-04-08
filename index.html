@@ -222,8 +222,10 @@
         usageScenarios.forEach(usage => {
             const usageDecimal = usage / 100;
             const usableEnergyPerCycle = capacity * usageDecimal;
+            const dailyDemand = dailyConsumption * usageDecimal; // Berechnung des Tagesbedarfs
 
-            const equivalentFullCyclesPerDay = usableEnergyPerCycle / dailyConsumption;
+            // Geänderte Berechnung für benötigte Zyklen pro Tag unter Verwendung von dailyDemand
+            const equivalentFullCyclesPerDay = usableEnergyPerCycle / dailyDemand;
 
             let lifetimeByCycles = 0;
             if (equivalentFullCyclesPerDay > 0) {
@@ -234,13 +236,11 @@
             const lcoe = (cost / totalEnergy) * 100;
             const coveredConsumption = (usableEnergyPerCycle / dailyConsumption) * 100;
 
-            const dailyDemand = dailyConsumption * usageDecimal; // Berechnung des Tagesbedarfs
-
             const newRow = lcoeTable.insertRow();
             newRow.insertCell(0).textContent = usage;
             newRow.insertCell(1).textContent = equivalentFullCyclesPerDay.toFixed(2);
             newRow.insertCell(2).textContent = coveredConsumption.toFixed(2);
-            newRow.insertCell(3).textContent = dailyDemand.toFixed(2); // Anzeige des Tagesbedarfs
+            newRow.insertCell(3).textContent = dailyDemand.toFixed(2);
             newRow.insertCell(4).textContent = lifetime.toFixed(2) + " Jahre (ca. " + equivalentFullCyclesPerDay.toFixed(2) + " Zyklen/Tag)";
             newRow.insertCell(5).textContent = totalEnergy.toFixed(2);
             newRow.insertCell(6).textContent = lcoe.toFixed(2);
