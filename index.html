@@ -100,4 +100,191 @@
             border-collapse: collapse;
             background-color: #fff;
             border-radius: 12px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0,
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            margin-bottom: 20px; /* Fügt Abstand zur Grafik hinzu */
+        }
+
+        #lcoeTable th, #lcoeTable td {
+            border: 1px solid #e5e7eb;
+            padding: 10px;
+            text-align: center;
+        }
+
+        #lcoeTable th {
+            background-color: #f9fafb;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        #lcoeTable tbody tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+
+        #lcoeChart {
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            box-sizing: border-box;
+            width: 800px; /* Breite entsprechend der Tabelle */
+            margin-bottom: 20px; /* Fügt optional etwas Abstand unter der Grafik hinzu */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h1>Konfiguration</h1>
+
+        <div class="form-group">
+            <label for="dailyConsumption">Täglicher Verbrauch (kWh):</label>
+            <input type="number" id="dailyConsumption" value="5.00">
+        </div>
+
+        <div class="form-group">
+            <label for="capacity">Batteriekapazität (kWh):</label>
+            <input type="number" id="capacity" value="1.92">
+        </div>
+
+        <div class="form-group">
+            <label for="cost">Kosten der Batterie (€):</label>
+            <input type="number" id="cost" value="800.00">
+        </div>
+
+        <div class="form-group">
+            <label for="maxCycles">Maximale Zyklenzahl:</label>
+            <input type="number" id="maxCycles" value="6000">
+        </div>
+
+        <div class="form-group">
+            <label for="maxLifetime">Maximale Lebensdauer (Jahre):</label>
+            <input type="number" id="maxLifetime" value="15">
+        </div>
+
+        <button onclick="calculateLCOE()">Berechnung starten</button>
+    </div>
+
+    <div class="results-top">
+        <div class="result-box">
+            <strong>Verbrauch</strong>
+            <span id="dailyConsumptionResult">5.00</span> kWh/Tag
+        </div>
+        <div class="result-box">
+            <strong>Kapazität</strong>
+            <span id="capacityResult">1.92</span> kWh
+        </div>
+        <div class="result-box">
+            <strong>Kosten</strong>
+            <span id="costResult">800.00</span> €
+        </div>
+    </div>
+
+    <table id="lcoeTable">
+        <thead>
+            <tr>
+                <th>Nutzung (%)</th>
+                <th>benötigte Zyklen pro Tag</th>
+                <th>% des<br>Tagesverbrauchs</th>
+                <th>Tagesbedarf<br>(kWh)</th>
+                <th>Lebensdauer</th>
+                <th>Gesamtenergie<br>(kWh)</th>
+                <th>LCOE<br>(ct/kWh)</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <canvas id="lcoeChart"></canvas>
+
+<script>
+    let myChart;
+
+    function calculateLCOE() {
+        const dailyConsumption = parseFloat(document.getElementById("dailyConsumption").value);
+        const capacity = parseFloat(document.getElementById("capacity").value);
+        const cost = parseFloat(document.getElementById("cost").value);
+        const maxCycles = parseInt(document.getElementById("maxCycles").value);
+        const maxLifetime = parseInt(document.getElementById("maxLifetime").value);
+
+        document.getElementById("dailyConsumptionResult").textContent = dailyConsumption.toFixed(2);
+        document.getElementById("capacityResult").textContent = capacity.toFixed(2);
+        document.getElementById("costResult").textContent = cost.toFixed(2);
+
+        const lcoeTable = document.getElementById("lcoeTable").getElementsByTagName('tbody')[0];
+        lcoeTable.innerHTML = "";
+
+        const usageLabels = [];
+        const lcoeData = [];
+
+        const usageScenarios = [100, 90, 80, 70, 60, 50, 40, 30, 20, 10];
+
+        usageScenarios.forEach(usage => {
+            const usageDecimal = usage / 100;
+            const usableEnergyPerCycle = capacity * usageDecimal;
+
+            const equivalentFullCyclesPerDay = usableEnergyPerCycle / dailyConsumption;
+
+            let lifetimeByCycles = 0;
+            if (equivalentFullCyclesPerDay > 0) {
+                lifetimeByCycles = maxCycles / equivalentFullCyclesPerDay / 365;
+            }
+            const lifetime = Math.min(lifetimeByCycles, maxLifetime);
+            const totalEnergy = Math.min(dailyConsumption * 365 * lifetime, maxCycles * capacity);
+            const lcoe = (cost / totalEnergy) * 100;
+            const coveredConsumption = (usableEnergyPerCycle / dailyConsumption) * 100;
+
+            const dailyDemand = dailyConsumption * usageDecimal; // Berechnung des Tagesbedarfs
+
+            const newRow = lcoeTable.insertRow();
+            newRow.insertCell(0).textContent = usage;
+            newRow.insertCell(1).textContent = equivalentFullCyclesPerDay.toFixed(2);
+            newRow.insertCell(2).textContent = coveredConsumption.toFixed(2);
+            newRow.insertCell(3).textContent = dailyDemand.toFixed(2); // Anzeige des Tagesbedarfs
+            newRow.insertCell(4).textContent = lifetime.toFixed(2) + " Jahre (ca. " + equivalentFullCyclesPerDay.toFixed(2) + " Zyklen/Tag)";
+            newRow.insertCell(5).textContent = totalEnergy.toFixed(2);
+            newRow.insertCell(6).textContent = lcoe.toFixed(2);
+
+            usageLabels.push(usage + "%");
+            lcoeData.push(lcoe);
+        });
+
+        const ctx = document.getElementById('lcoeChart').getContext('2d');
+        if (myChart) myChart.destroy();
+
+        myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: usageLabels,
+                datasets: [{
+                    label: 'LCOE (Cent/kWh)',
+                    data: lcoeData,
+                    fill: false,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'LCOE (Cent/kWh)' }
+                    },
+                    x: {
+                        title: { display: true, text: 'Nutzung (%)' }
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'LCOE nach Nutzungsszenario',
+                        padding: { top: 10, bottom: 30 }
+                    }
+                }
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
