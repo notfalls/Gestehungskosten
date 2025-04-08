@@ -224,8 +224,8 @@
             const usableEnergyPerCycle = capacity * usageDecimal;
             const dailyDemand = dailyConsumption * usageDecimal; // Berechnung des Tagesbedarfs
 
-            // Korrigierte Berechnung für benötigte Zyklen pro Tag
-            const equivalentFullCyclesPerDay = dailyConsumption / usableEnergyPerCycle;
+            // Neue Berechnung für benötigte Zyklen pro Tag
+            const equivalentFullCyclesPerDay = dailyDemand / capacity;
 
             let lifetimeByCycles = 0;
             if (equivalentFullCyclesPerDay > 0) {
