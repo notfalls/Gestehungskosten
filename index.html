@@ -14,6 +14,34 @@
             flex-direction: column; /* Stapelt die Hauptelemente vertikal, um Zentrierung zu erleichtern */
             align-items: center; /* Zentriert Elemente innerhalb des body */
         }
+        #user-manual {
+            margin-bottom: 30px;
+            padding: 25px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            width: 800px; /* Breite an die anderen Elemente anpassen */
+            text-align: left;
+        }
+        #user-manual h2 {
+            color: #374151;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        #user-manual h3 {
+            color: #4b5563;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        #user-manual ul {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+        #user-manual li {
+            color: #6b7280;
+            line-height: 1.6;
+        }
         .sidebar {
             width: 800px; /* Breite entsprechend der Tabelle */
             padding: 25px;
@@ -83,6 +111,12 @@
             color: #374151;
             font-weight: 600;
         }
+        h2 {
+            color: #374151;
+            margin-bottom: 15px;
+            text-align: left;
+            width: 800px; /* Breite anpassen */
+        }
         #lcoeTable {
             width: 800px; /* Breite der Tabelle festlegen */
             border-collapse: collapse;
@@ -130,7 +164,7 @@
     </style>
 </head>
 <body>
-    <div style="margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; background-color: #f9f9f9;">
+    <div id="user-manual">
         <h2>Bedienungsanleitung für den LCOE Batterie Rechner</h2>
         <p>Dieser Rechner hilft dir, die Levelized Cost of Energy (LCOE) für einen Batteriespeicher in verschiedenen Nutzungsszenarien zu berechnen. Folge diesen Schritten, um den Rechner zu verwenden:</p>
         <h3>1. Konfiguration:</h3>
@@ -138,7 +172,7 @@
             <li><strong>Täglicher Verbrauch (kWh):</strong> Gib hier deinen durchschnittlichen täglichen Energieverbrauch in Kilowattstunden (kWh) ein.</li>
             <li><strong>Batteriekapazität (kWh):</strong> Gib die nutzbare Speicherkapazität deiner Batterie in Kilowattstunden (kWh) ein.</li>
             <li><strong>Kosten der Batterie (€):</strong> Gib die Gesamtkosten der Batterie in Euro (€) ein.</li>
-            <li><strong>Maximale Zyklenzahl:** Gib die maximale Anzahl an vollständigen Lade- und Entladezyklen ein, die deine Batterie voraussichtlich erreichen wird. Diese Information findest du in den technischen Daten der Batterie.</li>
+            <li><strong>Maximale Zyklenzahl:</strong> Gib die maximale Anzahl an vollständigen Lade- und Entladezyklen ein, die deine Batterie voraussichtlich erreichen wird. Diese Information findest du in den technischen Daten der Batterie.</li>
             <li><strong>Maximale Lebensdauer (Jahre):</strong> Gib die maximale Lebensdauer der Batterie in Jahren ein, die vom Hersteller angegeben wird.</li>
         </ul>
         <h3>2. Ergebnisse:</h3>
@@ -148,173 +182,7 @@
             <li><strong>Tabelle:</strong> Die Tabelle zeigt die berechneten LCOE-Werte für verschiedene Nutzungsszenarien (von 100% bis 10% des täglichen Bedarfs, der durch die Batterie gedeckt wird). Die Tabelle enthält folgende Spalten:
                 <ul>
                     <li><strong>Nutzung (%):</strong> Der Prozentsatz des täglichen Energiebedarfs, der durch die Batterie gedeckt wird.</li>
-                    <li><strong>benötigte Zyklen pro Tag:** Die Anzahl der vollständigen Lade- und Entladezyklen, die die Batterie pro Tag durchführen muss, um den gewünschten Nutzungsgrad zu erreichen.</li>
+                    <li><strong>benötigte Zyklen pro Tag:</strong> Die Anzahl der vollständigen Lade- und Entladezyklen, die die Batterie pro Tag durchführen muss, um den gewünschten Nutzungsgrad zu erreichen.</li>
                     <li><strong>Tagesbedarf (kWh):</strong> Die Energiemenge in kWh, die die Batterie pro Tag liefern muss, um den gewählten Nutzungsgrad zu decken.</li>
-                    <li><strong>Lebensdauer:** Die geschätzte Lebensdauer der Batterie in Jahren, basierend auf der maximalen Zyklenzahl und der maximalen Lebensdauer. Die ungefähre Anzahl der Zyklen pro Tag wird ebenfalls angezeigt.</li>
-                    <li><strong>Gesamtenergie (kWh):** Die geschätzte Gesamtmenge an Energie in kWh, die die Batterie über ihre Lebensdauer liefern kann (unter Berücksichtigung von Nutzung, Lebensdauer und maximaler Kapazität).</li>
-                    <li><strong>LCOE (ct/kWh):** Die Levelized Cost of Energy in Cent pro Kilowattstunde. Dieser Wert gibt die durchschnittlichen Kosten pro Kilowattstunde an, die über die Lebensdauer der Batterie anfallen.</li>
-                </ul>
-            </li>
-            <li><strong>Diagramm:** Unterhalb der Tabelle wird ein Liniendiagramm angezeigt, das den <strong>LCOE-Wert (in Cent/kWh)</strong> für die verschiedenen Nutzungsszenarien visualisiert. Die horizontale Achse zeigt den Nutzungsprozentsatz, und die vertikale Achse zeigt den LCOE-Wert.</li>
-        </ul>
-        <p>Du kannst die Eingabewerte jederzeit ändern und erneut auf "Berechnung starten" klicken, um zu sehen, wie sich unterschiedliche Parameter auf die LCOE auswirken.</p>
-    </div>
-    <h1>1. Konfiguration</h1>
-    <div class="sidebar">
-        <div class="form-group">
-            <label for="dailyConsumption">Täglicher Verbrauch (kWh):</label>
-            <input type="number" id="dailyConsumption" value="5.00">
-        </div>
-        <div class="form-group">
-            <label for="capacity">Batteriekapazität (kWh):</label>
-            <input type="number" id="capacity" value="1.92">
-        </div>
-        <div class="form-group">
-            <label for="cost">Kosten der Batterie (€):</label>
-            <input type="number" id="cost" value="800.00">
-        </div>
-        <div class="form-group">
-            <label for="maxCycles">Maximale Zyklenzahl:</label>
-            <input type="number" id="maxCycles" value="6000">
-        </div>
-        <div class="form-group">
-            <label for="maxLifetime">Maximale Lebensdauer (Jahre):</label>
-            <input type="number" id="maxLifetime" value="15">
-        </div>
-        <button onclick="calculateLCOE()">Berechnung starten</button>
-    </div>
-    <h2>2. Ergebnisse</h2>
-    <div class="results-top">
-        <div class="result-box">
-            <strong>Verbrauch</strong>
-            <span id="dailyConsumptionResult">5.00</span> kWh/Tag
-        </div>
-        <div class="result-box">
-            <strong>Kapazität</strong>
-            <span id="capacityResult">1.92</span> kWh
-        </div>
-        <div class="result-box">
-            <strong>Kosten</strong>
-            <span id="costResult">800.00</span> €
-        </div>
-    </div>
-    <table id="lcoeTable">
-        <thead>
-            <tr>
-                <th>Nutzung (%)</th>
-                <th>benötigte Zyklen pro Tag</th>
-                <th>Tagesbedarf<br>(kWh)</th>
-                <th>Lebensdauer</th>
-                <th>Gesamtenergie<br>(kWh)</th>
-                <th>LCOE<br>(ct/kWh)</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-    <canvas id="lcoeChart"></canvas>
-    <footer>
-        Dieses Werk ist lizenziert unter einer
-        <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">
-            Creative Commons Attribution-ShareAlike 4.0 International Lizenz
-        </a>
-        von Klaus Horn.
-    </footer>
-    <script>
-        let myChart;
-        function calculateLCOE() {
-            // Eingabewerte aus den Formularfeldern lesen
-            const dailyConsumption = parseFloat(document.getElementById("dailyConsumption").value);
-            const capacity = parseFloat(document.getElementById("capacity").value);
-            const cost = parseFloat(document.getElementById("cost").value);
-            const maxCycles = parseInt(document.getElementById("maxCycles").value);
-            const maxLifetime = parseInt(document.getElementById("maxLifetime").value);
-            // Anzeigen der Eingabewerte in den Ergebnisboxen
-            document.getElementById("dailyConsumptionResult").textContent = dailyConsumption.toFixed(2);
-            document.getElementById("capacityResult").textContent = capacity.toFixed(2);
-            document.getElementById("costResult").textContent = cost.toFixed(2);
-            // Tabelle für die Ergebnisse holen und den Inhalt des Tabellenkörpers leeren
-            const lcoeTable = document.getElementById("lcoeTable").getElementsByTagName('tbody')[0];
-            lcoeTable.innerHTML = "";
-            // Arrays für die Beschriftungen und Daten des Diagramms
-            const usageLabels = [];
-            const lcoeData = [];
-            // Nutzungsszenarien in Prozent
-            const usageScenarios = [100, 90, 80, 70, 60, 50, 40, 30, 20, 10];
-            // Schleife durch die verschiedenen Nutzungsszenarien
-            usageScenarios.forEach(usage => {
-                const usageDecimal = usage / 100;
-                // Nutzbare Energie pro Zyklus (basierend auf dem Nutzungsgrad)
-                const usableEnergyPerCycle = capacity * usageDecimal;
-                // Tagesbedarf der Batterie (Anteil des gesamten Tagesverbrauchs)
-                const dailyDemand = dailyConsumption * usageDecimal;
-                // Berechnung der benötigten Vollzyklen pro Tag
-                const equivalentFullCyclesPerDay = dailyDemand / capacity;
-                let lifetimeByCycles = 0;
-                // Vermeidung von Division durch Null, falls Kapazität Null ist
-                if (equivalentFullCyclesPerDay > 0) {
-                    lifetimeByCycles = maxCycles / equivalentFullCyclesPerDay / 365;
-                }
-                // Die tatsächliche Lebensdauer ist das Minimum aus der zyklusbedingten und der maximalen Lebensdauer
-                const lifetime = Math.min(lifetimeByCycles, maxLifetime);
-                // Potenzielle Gesamtenergie basierend auf Tagesbedarf und Lebensdauer, begrenzt durch maximale Zyklen
-                const potentialTotalEnergy = Math.min(dailyDemand * 365 * lifetime, maxCycles * capacity);
-                // Absolute maximale Gesamtenergie basierend auf dem gesamten Tagesverbrauch und der maximalen Lebensdauer
-                const absoluteMaxTotalEnergy = dailyConsumption * 365 * maxLifetime;
-                // Die tatsächliche Gesamtenergie ist das Minimum aus der potenziellen und der absoluten maximalen Gesamtenergie
-                const totalEnergy = Math.min(potentialTotalEnergy, absoluteMaxTotalEnergy);
-                // Berechnung der Levelized Cost of Energy (LCOE) in Cent pro Kilowattstunde
-                const lcoe = (cost / totalEnergy) * 100;
-                // Berechnung des prozentual gedeckten Verbrauchs (wird aktuell nicht in der Tabelle angezeigt)
-                const coveredConsumption = (usableEnergyPerCycle / dailyConsumption) * 100;
-                // Neue Zeile zur Tabelle hinzufügen
-                const newRow = lcoeTable.insertRow();
-                newRow.insertCell(0).textContent = usage;
-                newRow.insertCell(1).textContent = equivalentFullCyclesPerDay.toFixed(2);
-                newRow.insertCell(2).textContent = dailyDemand.toFixed(2);
-                newRow.insertCell(3).textContent = lifetime.toFixed(2) + " Jahre (ca. " + equivalentFullCyclesPerDay.toFixed(2) + " Zyklen/Tag)";
-                newRow.insertCell(4).textContent = totalEnergy.toFixed(2);
-                newRow.insertCell(5).textContent = lcoe.toFixed(2);
-                // Daten für das Diagramm hinzufügen
-                usageLabels.push(usage + "%");
-                lcoeData.push(lcoe);
-            });
-            // Diagramm-Kontext holen
-            const ctx = document.getElementById('lcoeChart').getContext('2d');
-            // Falls bereits ein Diagramm existiert, dieses zerstören, um ein neues zu erstellen
-            if (myChart) myChart.destroy();
-            // Neues Diagramm erstellen
-            myChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: usageLabels,
-                    datasets: [{
-                        label: 'LCOE (Cent/kWh)',
-                        data: lcoeData,
-                        fill: false,
-                        borderColor: 'rgb(75, 192, 192)',
-                        tension: 0.1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: { display: true, text: 'LCOE (Cent/kWh)' }
-                        },
-                        x: {
-                            title: { display: true, text: 'Nutzung (%)' }
-                        }
-                    },
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'LCOE nach Nutzungsszenario',
-                            padding: { top: 10, bottom: 30 }
-                        }
-                    }
-                }
-            });
-        }
-    </script>
-</body>
-</html>
+                    <li><strong>Lebensdauer:</strong> Die geschätzte Lebensdauer der Batterie in Jahren, basierend auf der maximalen Zyklenzahl und der maximalen Lebensdauer. Die ungefähre Anzahl der Zyklen pro Tag wird ebenfalls angezeigt.</li>
+                    <li><strong>Gesamtenergie (kWh):</strong> Die geschätzte Gesamtmenge an Energie in kWh, die die Batterie über ihre Lebensdauer liefern kann (unter Berücksichtigung von Nutzung, Lebensdauer und maximal
