@@ -30,17 +30,6 @@ Dieser Rechner hilft dir, die Levelized Cost of Energy (LCOE) für einen Batteri
 
 Da dieser Rechner als einzelne HTML-Datei mit eingebettetem JavaScript und CSS implementiert ist, ist keine spezielle Installation erforderlich. Lade einfach die `index.html`-Datei herunter und öffne sie in deinem Webbrowser.
 
-## Screenshots
-
-Hier sind einige Screenshots des Rechners:
-
-<p align="center">
-  <img src="image_19435a.png" alt="Formularansicht" width="400">
-</p>
-
-<p align="center">
-  <img src="image_193ff5.png" alt="Ergebnisansicht" width="400">
-</p>
 
 
 ## Beitrag
