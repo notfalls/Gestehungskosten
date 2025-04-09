@@ -2,287 +2,134 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>LCOE Berechnung mit grafischer Auswertung</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LCOE Batterie Rechner</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 20px;
-            background-color: #f3f4f6;
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
             display: flex;
-            justify-content: center; /* Zentriert die Hauptelemente horizontal */
-            flex-direction: column; /* Stapelt die Hauptelemente vertikal, um Zentrierung zu erleichtern */
-            align-items: center; /* Zentriert Elemente innerhalb des body */
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
         }
-
-        .sidebar {
-            width: 800px; /* Breite entsprechend der Tabelle */
-            padding: 25px;
-            background-color: #fff;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            margin-bottom: 20px; /* Fügt Abstand zum nächsten Element hinzu */
+        h1 {
+            color: #333;
         }
-
-        .sidebar h1 {
-            text-align: left;
-            color: #374151;
-            margin-bottom: 20px;
+        .container {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
         }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
+        label {
             display: block;
-            font-weight: 500;
-            color: #4b5563;
-            margin-bottom: 8px;
+            margin: 1rem 0 0.2rem;
         }
-
-        .form-group input[type="number"] {
+        input {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
-            box-sizing: border-box;
-            font-size: 16px;
-            color: #374151;
+            padding: 0.5rem;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 0.5rem;
         }
-
-        .sidebar button {
+        button {
+            margin-top: 1.5rem;
+            padding: 0.75rem;
             width: 100%;
-            padding: 12px;
-            font-size: 16px;
-            background-color: #10b981;
+            background: #007acc;
             color: white;
             border: none;
-            border-radius: 6px;
+            border-radius: 0.5rem;
+            font-size: 1rem;
             cursor: pointer;
-            transition: background-color 0.2s ease-in-out;
         }
-
-        .sidebar button:hover {
-            background-color: #059669;
+        button:hover {
+            background: #005f99;
         }
-
-        .results-top {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 25px;
-            width: 800px; /* Breite entsprechend der Tabelle */
+        .result {
+            margin-top: 2rem;
         }
-
-        .result-box {
-            background-color: #fff;
-            padding: 15px;
-            border-radius: 12px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-            flex: 1;
-            text-align: center;
-        }
-
-        .result-box strong {
-            display: block;
-            color: #4b5563;
-            margin-bottom: 5px;
-        }
-
-        .result-box span {
-            font-size: 18px;
-            color: #374151;
-            font-weight: 600;
-        }
-
-        #lcoeTable {
-            width: 800px; /* Breite der Tabelle festlegen */
+        table {
+            width: 100%;
             border-collapse: collapse;
-            background-color: #fff;
-            border-radius: 12px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-            overflow: hidden;
-            margin-bottom: 20px; /* Fügt Abstand zur Grafik hinzu */
+            margin-top: 1rem;
         }
-
-        #lcoeTable th, #lcoeTable td {
-            border: 1px solid #e5e7eb;
-            padding: 10px;
+        th, td {
+            border: 1px solid #ccc;
+            padding: 0.5rem;
             text-align: center;
         }
-
-        #lcoeTable th {
-            background-color: #f9fafb;
-            font-weight: 600;
-            color: #374151;
-        }
-
-        #lcoeTable tbody tr:nth-child(even) {
-            background-color: #f9fafb;
-        }
-
-        #lcoeChart {
-            background-color: #fff;
-            border-radius: 12px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-            padding: 20px;
-            box-sizing: border-box;
-            width: 800px; /* Breite entsprechend der Tabelle */
-            margin-bottom: 20px; /* Fügt optional etwas Abstand unter der Grafik hinzu */
+        th {
+            background-color: #f0f0f0;
         }
     </style>
 </head>
 <body>
+    <h1>LCOE-Rechner für Batteriespeicher</h1>
+    <div class="container">
+        <label for="dailyConsumption">Täglicher Verbrauch (kWh)</label>
+        <input type="number" id="dailyConsumption" placeholder="z. B. 5">
 
-    <div class="sidebar">
-        <h1>Konfiguration</h1>
+        <label for="capacity">Batteriekapazität (kWh)</label>
+        <input type="number" id="capacity" placeholder="z. B. 2">
 
-        <div class="form-group">
-            <label for="dailyConsumption">Täglicher Verbrauch (kWh):</label>
-            <input type="number" id="dailyConsumption" value="5.00">
-        </div>
+        <label for="cost">Kosten der Batterie (EUR)</label>
+        <input type="number" id="cost" placeholder="z. B. 5000">
 
-        <div class="form-group">
-            <label for="capacity">Batteriekapazität (kWh):</label>
-            <input type="number" id="capacity" value="1.92">
-        </div>
+        <label for="maxCycles">Maximale Zyklenzahl</label>
+        <input type="number" id="maxCycles" placeholder="z. B. 6000">
 
-        <div class="form-group">
-            <label for="cost">Kosten der Batterie (€):</label>
-            <input type="number" id="cost" value="800.00">
-        </div>
+        <label for="maxLifetime">Maximale Lebensdauer (Jahre)</label>
+        <input type="number" id="maxLifetime" placeholder="z. B. 15">
 
-        <div class="form-group">
-            <label for="maxCycles">Maximale Zyklenzahl:</label>
-            <input type="number" id="maxCycles" value="6000">
-        </div>
+        <button onclick="calculateLCOE()">Berechne LCOE</button>
 
-        <div class="form-group">
-            <label for="maxLifetime">Maximale Lebensdauer (Jahre):</label>
-            <input type="number" id="maxLifetime" value="15">
-        </div>
-
-        <button onclick="calculateLCOE()">Berechnung starten</button>
+        <div class="result" id="result"></div>
     </div>
 
-    <div class="results-top">
-        <div class="result-box">
-            <strong>Verbrauch</strong>
-            <span id="dailyConsumptionResult">5.00</span> kWh/Tag
-        </div>
-        <div class="result-box">
-            <strong>Kapazität</strong>
-            <span id="capacityResult">1.92</span> kWh
-        </div>
-        <div class="result-box">
-            <strong>Kosten</strong>
-            <span id="costResult">800.00</span> €
-        </div>
-    </div>
+    <script>
+        function calculateLCOE() {
+            const dailyConsumption = parseFloat(document.getElementById("dailyConsumption").value);
+            const capacity = parseFloat(document.getElementById("capacity").value);
+            const cost = parseFloat(document.getElementById("cost").value);
+            const maxCycles = parseFloat(document.getElementById("maxCycles").value);
+            const maxLifetime = parseFloat(document.getElementById("maxLifetime").value);
+            const resultDiv = document.getElementById("result");
 
-    <table id="lcoeTable">
-        <thead>
-            <tr>
-                <th>Nutzung (%)</th>
-                <th>benötigte Zyklen pro Tag</th>
-                <th>Tagesbedarf<br>(kWh)</th>
-                <th>Lebensdauer</th>
-                <th>Gesamtenergie<br>(kWh)</th>
-                <th>LCOE<br>(ct/kWh)</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-
-    <canvas id="lcoeChart"></canvas>
-
-<script>
-    let myChart;
-
-    function calculateLCOE() {
-        const dailyConsumption = parseFloat(document.getElementById("dailyConsumption").value);
-        const capacity = parseFloat(document.getElementById("capacity").value);
-        const cost = parseFloat(document.getElementById("cost").value);
-        const maxCycles = parseInt(document.getElementById("maxCycles").value);
-        const maxLifetime = parseInt(document.getElementById("maxLifetime").value);
-
-        document.getElementById("dailyConsumptionResult").textContent = dailyConsumption.toFixed(2);
-        document.getElementById("capacityResult").textContent = capacity.toFixed(2);
-        document.getElementById("costResult").textContent = cost.toFixed(2);
-
-        const lcoeTable = document.getElementById("lcoeTable").getElementsByTagName('tbody')[0];
-        lcoeTable.innerHTML = "";
-
-        const usageLabels = [];
-        const lcoeData = [];
-
-        const usageScenarios = [100, 90, 80, 70, 60, 50, 40, 30, 20, 10];
-
-        usageScenarios.forEach(usage => {
-            const usageDecimal = usage / 100;
-            const usableEnergyPerCycle = capacity * usageDecimal;
-            const dailyDemand = dailyConsumption * usageDecimal; // Berechnung des Tagesbedarfs
-
-            // Neue Berechnung für benötigte Zyklen pro Tag
-            const equivalentFullCyclesPerDay = dailyDemand / capacity;
-
-            let lifetimeByCycles = 0;
-            if (equivalentFullCyclesPerDay > 0) {
-                lifetimeByCycles = maxCycles / equivalentFullCyclesPerDay / 365;
+            if (isNaN(dailyConsumption) || isNaN(capacity) || isNaN(cost) || isNaN(maxCycles) || isNaN(maxLifetime)) {
+                resultDiv.innerText = "Bitte alle Felder korrekt ausfüllen.";
+                return;
             }
-            const lifetime = Math.min(lifetimeByCycles, maxLifetime);
-            const totalEnergy = Math.min(dailyConsumption * 365 * lifetime, maxCycles * capacity);
-            const lcoe = (cost / totalEnergy) * 100;
-            const coveredConsumption = (usableEnergyPerCycle / dailyConsumption) * 100;
 
-            const newRow = lcoeTable.insertRow();
-            newRow.insertCell(0).textContent = usage;
-            newRow.insertCell(1).textContent = equivalentFullCyclesPerDay.toFixed(2);
-            newRow.insertCell(2).textContent = dailyDemand.toFixed(2);
-            newRow.insertCell(3).textContent = lifetime.toFixed(2) + " Jahre (ca. " + equivalentFullCyclesPerDay.toFixed(2) + " Zyklen/Tag)";
-            newRow.insertCell(4).textContent = totalEnergy.toFixed(2);
-            newRow.insertCell(5).textContent = lcoe.toFixed(2);
+            const usageScenarios = [100, 90, 80, 70, 60, 50, 40, 30, 20, 10];
+            let tableHTML = '<table>';
+            tableHTML += '<tr><th>Nutzung (%)</th><th>Tagesbedarf (kWh)</th><th>Benötigte Zyklen pro Tag</th><th>Lebensdauer (Jahre)</th><th>Gesamtenergie (kWh)</th><th>LCOE (ct/kWh)</th></tr>';
 
-            usageLabels.push(usage + "%");
-            lcoeData.push(lcoe);
-        });
+            usageScenarios.forEach(usage => {
+                const usageDecimal = usage / 100;
+                const dailyDemand = dailyConsumption * usageDecimal;
+                const equivalentFullCyclesPerDay = dailyDemand / capacity;
+                const lifetimeByCycles = maxCycles / equivalentFullCyclesPerDay / 365;
+                const lifetime = Math.min(lifetimeByCycles, maxLifetime);
+                const totalEnergy = Math.min(dailyConsumption * 365 * lifetime, maxCycles * capacity);
+                const lcoe = (cost / totalEnergy) * 100;
 
-        const ctx = document.getElementById('lcoeChart').getContext('2d');
-        if (myChart) myChart.destroy();
+                tableHTML += `<tr>
+                    <td>${usage}%</td>
+                    <td>${dailyDemand.toFixed(2)}</td>
+                    <td>${equivalentFullCyclesPerDay.toFixed(2)}</td>
+                    <td>${lifetime.toFixed(2)}</td>
+                    <td>${totalEnergy.toFixed(0)}</td>
+                    <td>${lcoe.toFixed(2)}</td>
+                </tr>`;
+            });
 
-        myChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: usageLabels,
-                datasets: [{
-                    label: 'LCOE (Cent/kWh)',
-                    data: lcoeData,
-                    fill: false,
-                    borderColor: 'rgb(75, 192, 192)',
-                    tension: 0.1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        title: { display: true, text: 'LCOE (Cent/kWh)' }
-                    },
-                    x: {
-                        title: { display: true, text: 'Nutzung (%)' }
-                    }
-                },
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'LCOE nach Nutzungsszenario',
-                        padding: { top: 10, bottom: 30 }
-                    }
-                }
-            }
-        });
-    }
-</script>
-
+            tableHTML += '</table>';
+            resultDiv.innerHTML = tableHTML;
+        }
+    </script>
 </body>
 </html>
