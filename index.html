@@ -71,19 +71,19 @@
     <h1>LCOE-Rechner für Batteriespeicher</h1>
     <div class="container">
         <label for="dailyConsumption">Täglicher Verbrauch (kWh)</label>
-        <input type="number" id="dailyConsumption" placeholder="z. B. 5">
+        <input type="number" id="dailyConsumption" placeholder="z. B. 5" value="2">
 
         <label for="capacity">Batteriekapazität (kWh)</label>
-        <input type="number" id="capacity" placeholder="z. B. 2">
+        <input type="number" id="capacity" placeholder="z. B. 2" value="1">
 
         <label for="cost">Kosten der Batterie (EUR)</label>
-        <input type="number" id="cost" placeholder="z. B. 5000">
+        <input type="number" id="cost" placeholder="z. B. 5000" value="800">
 
         <label for="maxCycles">Maximale Zyklenzahl</label>
-        <input type="number" id="maxCycles" placeholder="z. B. 6000">
+        <input type="number" id="maxCycles" placeholder="z. B. 6000" value="6000">
 
         <label for="maxLifetime">Maximale Lebensdauer (Jahre)</label>
-        <input type="number" id="maxLifetime" placeholder="z. B. 15">
+        <input type="number" id="maxLifetime" placeholder="z. B. 15" value="20">
 
         <button onclick="calculateLCOE()">Berechne LCOE</button>
 
@@ -92,17 +92,13 @@
 
     <script>
         function calculateLCOE() {
-            const dailyConsumption = parseFloat(document.getElementById("dailyConsumption").value);
-            const capacity = parseFloat(document.getElementById("capacity").value);
-            const cost = parseFloat(document.getElementById("cost").value);
-            const maxCycles = parseFloat(document.getElementById("maxCycles").value);
-            const maxLifetime = parseFloat(document.getElementById("maxLifetime").value);
+            // Direkt im Code definierte Eingabewerte
+            const dailyConsumption = 2;   // kWh
+            const capacity = 1;          // kWh
+            const cost = 800;            // EUR
+            const maxCycles = 6000;
+            const maxLifetime = 20;      // Jahre
             const resultDiv = document.getElementById("result");
-
-            if (isNaN(dailyConsumption) || isNaN(capacity) || isNaN(cost) || isNaN(maxCycles) || isNaN(maxLifetime)) {
-                resultDiv.innerText = "Bitte alle Felder korrekt ausfüllen.";
-                return;
-            }
 
             const usageScenarios = [100, 90, 80, 70, 60, 50, 40, 30, 20, 10];
             let tableHTML = '<table>';
@@ -130,6 +126,8 @@
             tableHTML += '</table>';
             resultDiv.innerHTML = tableHTML;
         }
+        // Die Funktion wird aufgerufen, sobald das Skript geladen ist
+        calculateLCOE();
     </script>
 </body>
 </html>
