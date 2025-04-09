@@ -42,9 +42,6 @@ Hier sind einige Screenshots des Rechners:
   <img src="image_193ff5.png" alt="Ergebnisansicht" width="400">
 </p>
 
-## Anwenderstudie
-
-Eine simulierte Anwenderstudie zur Bewertung des Rechners ist ebenfalls im Code enthalten. Sie kann unterhalb der Bedienungsanleitung gefunden werden.
 
 ## Beitrag
 
