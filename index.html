@@ -114,11 +114,24 @@
             width: 800px; /* Breite entsprechend der Tabelle */
             margin-bottom: 20px; /* Fügt optional etwas Abstand unter der Grafik hinzu */
         }
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #718096;
+            font-size: 0.9em;
+        }
+        footer a {
+            color: #4a5568;
+            text-decoration: none;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
+    <h1>1. Konfiguration</h1>
     <div class="sidebar">
-        <h1>Konfiguration</h1>
         <div class="form-group">
             <label for="dailyConsumption">Täglicher Verbrauch (kWh):</label>
             <input type="number" id="dailyConsumption" value="5.00">
@@ -141,6 +154,7 @@
         </div>
         <button onclick="calculateLCOE()">Berechnung starten</button>
     </div>
+    <h2>2. Ergebnisse</h2>
     <div class="results-top">
         <div class="result-box">
             <strong>Verbrauch</strong>
@@ -169,102 +183,109 @@
         <tbody></tbody>
     </table>
     <canvas id="lcoeChart"></canvas>
-<script>
-    let myChart;
-    function calculateLCOE() {
-        // Eingabewerte aus den Formularfeldern lesen
-        const dailyConsumption = parseFloat(document.getElementById("dailyConsumption").value);
-        const capacity = parseFloat(document.getElementById("capacity").value);
-        const cost = parseFloat(document.getElementById("cost").value);
-        const maxCycles = parseInt(document.getElementById("maxCycles").value);
-        const maxLifetime = parseInt(document.getElementById("maxLifetime").value);
-        // Anzeigen der Eingabewerte in den Ergebnisboxen
-        document.getElementById("dailyConsumptionResult").textContent = dailyConsumption.toFixed(2);
-        document.getElementById("capacityResult").textContent = capacity.toFixed(2);
-        document.getElementById("costResult").textContent = cost.toFixed(2);
-        // Tabelle für die Ergebnisse holen und den Inhalt des Tabellenkörpers leeren
-        const lcoeTable = document.getElementById("lcoeTable").getElementsByTagName('tbody')[0];
-        lcoeTable.innerHTML = "";
-        // Arrays für die Beschriftungen und Daten des Diagramms
-        const usageLabels = [];
-        const lcoeData = [];
-        // Nutzungsszenarien in Prozent
-        const usageScenarios = [100, 90, 80, 70, 60, 50, 40, 30, 20, 10];
-        // Schleife durch die verschiedenen Nutzungsszenarien
-        usageScenarios.forEach(usage => {
-            const usageDecimal = usage / 100;
-            // Nutzbare Energie pro Zyklus (basierend auf dem Nutzungsgrad)
-            const usableEnergyPerCycle = capacity * usageDecimal;
-            // Tagesbedarf der Batterie (Anteil des gesamten Tagesverbrauchs)
-            const dailyDemand = dailyConsumption * usageDecimal;
-            // Berechnung der benötigten Vollzyklen pro Tag
-            const equivalentFullCyclesPerDay = dailyDemand / capacity;
-            let lifetimeByCycles = 0;
-            // Vermeidung von Division durch Null, falls Kapazität Null ist
-            if (equivalentFullCyclesPerDay > 0) {
-                lifetimeByCycles = maxCycles / equivalentFullCyclesPerDay / 365;
-            }
-            // Die tatsächliche Lebensdauer ist das Minimum aus der zyklusbedingten und der maximalen Lebensdauer
-            const lifetime = Math.min(lifetimeByCycles, maxLifetime);
-            // Potenzielle Gesamtenergie basierend auf Tagesbedarf und Lebensdauer, begrenzt durch maximale Zyklen
-            const potentialTotalEnergy = Math.min(dailyDemand * 365 * lifetime, maxCycles * capacity);
-            // Absolute maximale Gesamtenergie basierend auf dem gesamten Tagesverbrauch und der maximalen Lebensdauer
-            const absoluteMaxTotalEnergy = dailyConsumption * 365 * maxLifetime;
-            // Die tatsächliche Gesamtenergie ist das Minimum aus der potenziellen und der absoluten maximalen Gesamtenergie
-            const totalEnergy = Math.min(potentialTotalEnergy, absoluteMaxTotalEnergy);
-            // Berechnung der Levelized Cost of Energy (LCOE) in Cent pro Kilowattstunde
-            const lcoe = (cost / totalEnergy) * 100;
-            // Berechnung des prozentual gedeckten Verbrauchs (wird aktuell nicht in der Tabelle angezeigt)
-            const coveredConsumption = (usableEnergyPerCycle / dailyConsumption) * 100;
-            // Neue Zeile zur Tabelle hinzufügen
-            const newRow = lcoeTable.insertRow();
-            newRow.insertCell(0).textContent = usage;
-            newRow.insertCell(1).textContent = equivalentFullCyclesPerDay.toFixed(2);
-            newRow.insertCell(2).textContent = dailyDemand.toFixed(2);
-            newRow.insertCell(3).textContent = lifetime.toFixed(2) + " Jahre (ca. " + equivalentFullCyclesPerDay.toFixed(2) + " Zyklen/Tag)";
-            newRow.insertCell(4).textContent = totalEnergy.toFixed(2);
-            newRow.insertCell(5).textContent = lcoe.toFixed(2);
-            // Daten für das Diagramm hinzufügen
-            usageLabels.push(usage + "%");
-            lcoeData.push(lcoe);
-        });
-        // Diagramm-Kontext holen
-        const ctx = document.getElementById('lcoeChart').getContext('2d');
-        // Falls bereits ein Diagramm existiert, dieses zerstören, um ein neues zu erstellen
-        if (myChart) myChart.destroy();
-        // Neues Diagramm erstellen
-        myChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: usageLabels,
-                datasets: [{
-                    label: 'LCOE (Cent/kWh)',
-                    data: lcoeData,
-                    fill: false,
-                    borderColor: 'rgb(75, 192, 192)',
-                    tension: 0.1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        title: { display: true, text: 'LCOE (Cent/kWh)' }
-                    },
-                    x: {
-                        title: { display: true, text: 'Nutzung (%)' }
-                    }
+    <footer>
+        Dieses Werk ist lizenziert unter einer
+        <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">
+            Creative Commons Attribution-ShareAlike 4.0 International Lizenz
+        </a>
+        von Klaus Horn.
+    </footer>
+    <script>
+        let myChart;
+        function calculateLCOE() {
+            // Eingabewerte aus den Formularfeldern lesen
+            const dailyConsumption = parseFloat(document.getElementById("dailyConsumption").value);
+            const capacity = parseFloat(document.getElementById("capacity").value);
+            const cost = parseFloat(document.getElementById("cost").value);
+            const maxCycles = parseInt(document.getElementById("maxCycles").value);
+            const maxLifetime = parseInt(document.getElementById("maxLifetime").value);
+            // Anzeigen der Eingabewerte in den Ergebnisboxen
+            document.getElementById("dailyConsumptionResult").textContent = dailyConsumption.toFixed(2);
+            document.getElementById("capacityResult").textContent = capacity.toFixed(2);
+            document.getElementById("costResult").textContent = cost.toFixed(2);
+            // Tabelle für die Ergebnisse holen und den Inhalt des Tabellenkörpers leeren
+            const lcoeTable = document.getElementById("lcoeTable").getElementsByTagName('tbody')[0];
+            lcoeTable.innerHTML = "";
+            // Arrays für die Beschriftungen und Daten des Diagramms
+            const usageLabels = [];
+            const lcoeData = [];
+            // Nutzungsszenarien in Prozent
+            const usageScenarios = [100, 90, 80, 70, 60, 50, 40, 30, 20, 10];
+            // Schleife durch die verschiedenen Nutzungsszenarien
+            usageScenarios.forEach(usage => {
+                const usageDecimal = usage / 100;
+                // Nutzbare Energie pro Zyklus (basierend auf dem Nutzungsgrad)
+                const usableEnergyPerCycle = capacity * usageDecimal;
+                // Tagesbedarf der Batterie (Anteil des gesamten Tagesverbrauchs)
+                const dailyDemand = dailyConsumption * usageDecimal;
+                // Berechnung der benötigten Vollzyklen pro Tag
+                const equivalentFullCyclesPerDay = dailyDemand / capacity;
+                let lifetimeByCycles = 0;
+                // Vermeidung von Division durch Null, falls Kapazität Null ist
+                if (equivalentFullCyclesPerDay > 0) {
+                    lifetimeByCycles = maxCycles / equivalentFullCyclesPerDay / 365;
+                }
+                // Die tatsächliche Lebensdauer ist das Minimum aus der zyklusbedingten und der maximalen Lebensdauer
+                const lifetime = Math.min(lifetimeByCycles, maxLifetime);
+                // Potenzielle Gesamtenergie basierend auf Tagesbedarf und Lebensdauer, begrenzt durch maximale Zyklen
+                const potentialTotalEnergy = Math.min(dailyDemand * 365 * lifetime, maxCycles * capacity);
+                // Absolute maximale Gesamtenergie basierend auf dem gesamten Tagesverbrauch und der maximalen Lebensdauer
+                const absoluteMaxTotalEnergy = dailyConsumption * 365 * maxLifetime;
+                // Die tatsächliche Gesamtenergie ist das Minimum aus der potenziellen und der absoluten maximalen Gesamtenergie
+                const totalEnergy = Math.min(potentialTotalEnergy, absoluteMaxTotalEnergy);
+                // Berechnung der Levelized Cost of Energy (LCOE) in Cent pro Kilowattstunde
+                const lcoe = (cost / totalEnergy) * 100;
+                // Berechnung des prozentual gedeckten Verbrauchs (wird aktuell nicht in der Tabelle angezeigt)
+                const coveredConsumption = (usableEnergyPerCycle / dailyConsumption) * 100;
+                // Neue Zeile zur Tabelle hinzufügen
+                const newRow = lcoeTable.insertRow();
+                newRow.insertCell(0).textContent = usage;
+                newRow.insertCell(1).textContent = equivalentFullCyclesPerDay.toFixed(2);
+                newRow.insertCell(2).textContent = dailyDemand.toFixed(2);
+                newRow.insertCell(3).textContent = lifetime.toFixed(2) + " Jahre (ca. " + equivalentFullCyclesPerDay.toFixed(2) + " Zyklen/Tag)";
+                newRow.insertCell(4).textContent = totalEnergy.toFixed(2);
+                newRow.insertCell(5).textContent = lcoe.toFixed(2);
+                // Daten für das Diagramm hinzufügen
+                usageLabels.push(usage + "%");
+                lcoeData.push(lcoe);
+            });
+            // Diagramm-Kontext holen
+            const ctx = document.getElementById('lcoeChart').getContext('2d');
+            // Falls bereits ein Diagramm existiert, dieses zerstören, um ein neues zu erstellen
+            if (myChart) myChart.destroy();
+            // Neues Diagramm erstellen
+            myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: usageLabels,
+                    datasets: [{
+                        label: 'LCOE (Cent/kWh)',
+                        data: lcoeData,
+                        fill: false,
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.1
+                    }]
                 },
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'LCOE nach Nutzungsszenario',
-                        padding: { top: 10, bottom: 30 }
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'LCOE (Cent/kWh)' }
+                        },
+                        x: {
+                            title: { display: true, text: 'Nutzung (%)' }
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'LCOE nach Nutzungsszenario',
+                            padding: { top: 10, bottom: 30 }
+                        }
                     }
                 }
-            }
-        });
-    }
-</script>
+            });
+        }
+    </script>
 </body>
 </html>
